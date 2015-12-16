@@ -1,20 +1,15 @@
 #!/usr/bin/env bash
 
 CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-source "./scripts/helpers.sh"
-source "$HOME/.bash_it/themes/base.theme.bash"
+source $CURRENT_DIR/scripts/shared.sh
 
-scm_info="$(scm_prompt_info)"
-
-set_tmux_option() {
-	local option=$1
-	local value=$2
-	tmux set-option -gq "$option" "$value"
-}
+scm_info="#($CURRENT_DIR/scripts/scm.sh)"
+scm_interpolation_string="\#{scm_info}"
 
 do_interpolation() {
-	local all_interpolated=${scm_info}
-	echo $all_interpolated
+  local string="$1"
+  local scm_interpolated="${string/$scm_interpolation_string/$scm_info}"
+  echo "$scm_interpolated"
 }
 
 update_tmux_option() {
@@ -25,7 +20,7 @@ update_tmux_option() {
 }
 
 main() {
-	update_tmux_option "status-right"
 	update_tmux_option "status-left"
+	update_tmux_option "status-right"
 }
 main
